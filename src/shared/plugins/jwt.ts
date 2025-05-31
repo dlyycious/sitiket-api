@@ -9,7 +9,7 @@ export const jwtPlugin = fp((app, opt, done) => {
     verify: {
       algorithms: ["RS256"],
       allowedIss: "WhoisDlyy",
-      allowedAud: "SiTiket",
+      allowedAud: ["siTiket"],
     },
   });
   done();

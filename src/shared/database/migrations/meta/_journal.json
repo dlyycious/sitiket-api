@@ -8,6 +8,13 @@
       "when": 1748720868433,
       "tag": "0000_add_user_and_organizer_relationship",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1748722524117,
+      "tag": "0001_add_revoke_tokens_table",
+      "breakpoints": true
     }
   ]
 }

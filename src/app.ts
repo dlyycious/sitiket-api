@@ -4,34 +4,28 @@ import { configPlugin } from "./shared/plugins/appConfig";
 import { dbContextPlugin } from "./shared/plugins/dbContext";
 import { jwtPlugin } from "./shared/plugins/jwt";
 import { utilPlugin } from "./shared/plugins/utility";
-import { logger } from "./shared/config/logger";
-import { authenticatePlugin } from "./shared/plugins/authenticate";
+import { authenticateMiddleware } from "./shared/middlewares/authenticate";
 import { authModule } from "./modules/auth/authModule";
 import { apiDocs } from "./shared/plugins/apiDocs";
+import { logger } from "./shared/config/logger";
 
-const app: FastifyInstance = fastify({ logger });
+const isDevelopment = process.env.NODE_ENV === "development";
+
+const app: FastifyInstance = fastify({
+  logger: isDevelopment
+    ? logger
+    : {
+        level: "error",
+      },
+});
 
 /* Register Plugin */
 app.register(configPlugin);
 app.register(utilPlugin);
 app.register(dbContextPlugin);
 app.register(jwtPlugin);
-app.register(authenticatePlugin);
+app.register(authenticateMiddleware);
 await app.register(apiDocs);
-
-/* Hook Configuration */
-// app.addHook("onRequest", async (req, rep) => {
-//   if (process.env.NODE_ENV == "production") {
-//     const acceptHeader = req.headers["accept"];
-//     if (acceptHeader != "application/json") {
-//       return rep.code(406).send({
-//         statusCode: 406,
-//         message: "Server only accept application/json",
-//         error: "Not Acceptable",
-//       });
-//     }
-//   }
-// });
 
 /* Register Routes */
 app.register(authModule, { prefix: "/auth" });
@@ -55,7 +49,9 @@ app.setNotFoundHandler((req, rep) => {
 });
 
 try {
-  app.listen(config.server);
+  app.listen(config.server, () => {
+    console.log(`App running at http://${config.server.host}:${config.server.port}`);
+  });
 } catch (err) {
   app.log.error(err);
   process.exit(1);

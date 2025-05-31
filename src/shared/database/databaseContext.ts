@@ -2,8 +2,12 @@ import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { config } from "../config/appConfig";
 import { defineConfig } from "drizzle-kit";
+import { User } from "./models/user";
+import { Organizer } from "./models/organizer";
+import { OrganizerMember } from "./models/organizerMember";
+import { RevokeToken } from "./models/revokeToken";
 
-const registerModels = {};
+const registerModels = { User, Organizer, OrganizerMember, RevokeToken };
 
 const queryClient = postgres(config.database);
 

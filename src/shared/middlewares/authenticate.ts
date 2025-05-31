@@ -1,5 +1,5 @@
 import fp from "fastify-plugin";
-export const authenticatePlugin = fp(async (app, opt) => {
+export const authenticateMiddleware = fp(async (app, opt) => {
   app.decorate("authenticate", async (request, reply) => {
     try {
       await request.jwtVerify();
