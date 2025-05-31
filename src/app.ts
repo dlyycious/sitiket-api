@@ -20,18 +20,18 @@ app.register(authenticatePlugin);
 await app.register(apiDocs);
 
 /* Hook Configuration */
-app.addHook("onRequest", async (req, rep) => {
-  if (process.env.NODE_ENV == "production") {
-    const acceptHeader = req.headers["accept"];
-    if (acceptHeader != "application/json") {
-      return rep.code(406).send({
-        statusCode: 406,
-        message: "Server only accept application/json",
-        error: "Not Acceptable",
-      });
-    }
-  }
-});
+// app.addHook("onRequest", async (req, rep) => {
+//   if (process.env.NODE_ENV == "production") {
+//     const acceptHeader = req.headers["accept"];
+//     if (acceptHeader != "application/json") {
+//       return rep.code(406).send({
+//         statusCode: 406,
+//         message: "Server only accept application/json",
+//         error: "Not Acceptable",
+//       });
+//     }
+//   }
+// });
 
 /* Register Routes */
 app.register(authModule, { prefix: "/auth" });

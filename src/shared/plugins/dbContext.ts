@@ -1,5 +1,5 @@
 import fp from "fastify-plugin";
-import { databaseContext } from "../database/databaseContext";
+import { databaseContext, type IDatabaseContext } from "../database/databaseContext";
 
 export const dbContextPlugin = fp(async (app, opt) => {
   app.decorate("db", databaseContext);
@@ -7,6 +7,6 @@ export const dbContextPlugin = fp(async (app, opt) => {
 
 declare module "fastify" {
   interface FastifyInstance {
-    db: typeof databaseContext;
+    db: IDatabaseContext;
   }
 }

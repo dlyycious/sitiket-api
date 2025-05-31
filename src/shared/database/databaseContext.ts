@@ -1,5 +1,4 @@
 import postgres from "postgres";
-import path from "path";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { config } from "../config/appConfig";
 import { defineConfig } from "drizzle-kit";
@@ -8,9 +7,9 @@ const registerModels = {};
 
 const queryClient = postgres(config.database);
 
-export const databaseContext = drizzle({ client: queryClient, schema: registerModels });
+export const databaseContext = drizzle({ client: queryClient, schema: registerModels, casing: "snake_case" });
 
-type IDatabaseContext = typeof databaseContext;
+export type IDatabaseContext = typeof databaseContext;
 
 export default defineConfig({
   dialect: "postgresql",
@@ -22,7 +21,7 @@ export default defineConfig({
     schema: "public",
     table: "__migrations",
   },
-  schema: path.resolve(__dirname, "models"),
-  out: path.resolve(__dirname, "migrations"),
+  schema: "src/shared/database/models",
+  out: "src/shared/database/migrations",
   casing: "snake_case",
 });

@@ -9,7 +9,7 @@ export async function loginHandler(this: FastifyInstance, request: FastifyReques
     return reply.code(400).send(MakeResponse.send(400, "Email or Password is invalid"));
   }
 
-  const token = await this.jwt.sign(
+  const token = this.jwt.sign(
     {},
     {
       iss: "WhoisDlyy",
