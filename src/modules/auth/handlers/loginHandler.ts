@@ -5,6 +5,29 @@ import { eq } from "drizzle-orm";
 import { User } from "@/shared/database/models/user";
 import { generateUUID } from "@/shared/utils/uuidGenerator";
 
+const createToken = (
+  app: FastifyInstance,
+  payload: { id: string; username: string; email: string },
+  type: "access" | "refresh"
+): string => {
+  const token = app.jwt.sign(
+    {
+      id: payload.id,
+      username: payload.username,
+      email: payload.email,
+      tokenType: type,
+    },
+    {
+      jti: generateUUID(),
+      iss: "WhoisDlyy",
+      aud: "siTiket",
+      expiresIn: type == "access" ? "1h" : "30d",
+    }
+  );
+
+  return token;
+};
+
 export async function loginHandler(this: FastifyInstance, request: FastifyRequest, reply: FastifyReply) {
   try {
     const { email, password } = request.body as IInLoginSchema;
@@ -32,35 +55,14 @@ export async function loginHandler(this: FastifyInstance, request: FastifyReques
         );
     }
 
-    const accessToken = this.jwt.sign(
-      {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        tokenType: "access",
-      },
-      {
-        jti: generateUUID(),
-        iss: "WhoisDlyy",
-        aud: "siTiket",
-        expiresIn: "1h",
-      }
-    );
+    const payload = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+    };
 
-    const refreshToken = this.jwt.sign(
-      {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        tokenType: "refresh",
-      },
-      {
-        jti: generateUUID(),
-        iss: "WhoisDlyy",
-        aud: "refreshSiTiket",
-        expiresIn: "30d",
-      }
-    );
+    const accessToken = createToken(this, payload, "access");
+    const refreshToken = createToken(this, payload, "refresh");
 
     return reply.code(200).send(
       MakeResponse.withData(200, "Login Sucessfull", {
